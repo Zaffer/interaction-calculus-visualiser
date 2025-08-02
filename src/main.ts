@@ -50,16 +50,20 @@ async function init() {
   // Create two additional nodes below the prism
   const node3 = new GraphNode(new THREE.Vector3(-1, -1, 0));
   const node4 = new GraphNode(new THREE.Vector3(1, -1, 0));
+  const node5 = new GraphNode(new THREE.Vector3(-2, 2.5, 0)); // New node for port3
   
   node3.addToScene(scene);
   node4.addToScene(scene);
+  node5.addToScene(scene);
 
   // Create edges from prism ports to the nodes below
   const edge2 = new GraphEdge(prism.port1, node3, 0xffffff, prism.getPort1Direction());
   const edge3 = new GraphEdge(prism.port2, node4, 0xffffff, prism.getPort2Direction());
+  const edge4 = new GraphEdge(prism.port3, node5, 0xffffff, prism.getPort3Direction()); // New edge from tip
   
   edge2.addToScene(scene);
   edge3.addToScene(scene);
+  edge4.addToScene(scene);
 
   // Create physics engine
   const physics = new PhysicsEngine();
@@ -69,14 +73,17 @@ async function init() {
   physics.addNode(node2);
   physics.addNode(node3);
   physics.addNode(node4);
+  physics.addNode(node5); // Add the new node
   // Add prism ports as fixed nodes (they participate in forces but don't move)
   physics.addNode(prism.port1, true);
   physics.addNode(prism.port2, true);
+  physics.addNode(prism.port3, true); // Add the new port
   
   // Add edges to physics
   physics.addEdge(edge);
   physics.addEdge(edge2);
   physics.addEdge(edge3);
+  physics.addEdge(edge4); // Add the new edge
 
   // Handle resize
   window.addEventListener('resize', () => {

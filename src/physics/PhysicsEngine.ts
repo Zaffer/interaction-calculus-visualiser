@@ -9,9 +9,9 @@ export class PhysicsEngine {
   private fixedNodes = new Set<GraphNode>();
   
   // Physics parameters
-  private repulsionStrength = 50;
-  private springStrength = 0.1;
-  private controlPointAttraction = 5; // New parameter for control point attraction
+  private repulsionStrength = 10;
+  private springStrength = 0.5;
+  private controlPointAttraction = 5; // straightens edges inline with prism port control point
   private damping = 0.9;
   private timeStep = 0.016; // ~60fps
 
@@ -53,8 +53,8 @@ export class PhysicsEngine {
         const force1 = direction.clone().multiplyScalar(repulsionForce);
         const force2 = direction.clone().multiplyScalar(-repulsionForce);
         
-        forces.get(node1)!.add(force1);
-        forces.get(node2)!.add(force2);
+        this.applyForce(forces, node1, force1);
+        this.applyForce(forces, node2, force2);
       }
     }
 
@@ -80,8 +80,8 @@ export class PhysicsEngine {
       const springForce = this.springStrength * (distance - restLength);
       const force = direction.clone().multiplyScalar(springForce);
       
-      forces.get(node1)!.add(force);
-      forces.get(node2)!.sub(force);
+      this.applyForce(forces, node1, force);
+      this.applyForce(forces, node2, force.clone().negate());
     });
 
     // Control point attraction forces
@@ -102,7 +102,7 @@ export class PhysicsEngine {
       
       const attractionForce = attractionDirection.multiplyScalar(this.controlPointAttraction);
       
-      forces.get(node2)!.add(attractionForce);
+      this.applyForce(forces, node2, attractionForce);
     });
 
     // Apply forces and update positions
@@ -132,5 +132,11 @@ export class PhysicsEngine {
     this.edges.forEach(edge => {
       edge.updateCurve();
     });
+  }
+
+  private applyForce(forces: Map<GraphNode, THREE.Vector3>, node: GraphNode, force: THREE.Vector3): void {
+    if (forces.has(node)) {
+      forces.get(node)!.add(force);
+    }
   }
 }
