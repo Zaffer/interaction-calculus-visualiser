@@ -1,4 +1,4 @@
-# LONG LAMBDAS
+# Interaction Calculas Visualiser
 
 ## TODO
 

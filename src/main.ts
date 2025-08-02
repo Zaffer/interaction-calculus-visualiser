@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import WebGPURenderer from "three/src/renderers/webgpu/WebGPURenderer.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GraphNode } from "./objects/GraphNode.js";
+import { GraphEdge } from "./objects/GraphEdge.js";
+import { TriangularPrism } from "./objects/TriangularPrism.js";
 
 // Initialize WebGPU
 async function init() {
@@ -28,26 +31,34 @@ async function init() {
   controls.enableDamping = true;
   controls.dampingFactor = 0.05;
 
-  // Create two nodes (spheres)
-  const nodeGeometry = new THREE.SphereGeometry(0.3, 16, 16);
-  const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  // Create graph nodes
+  const node1 = new GraphNode(new THREE.Vector3(-2, 0, 0));
+  const node2 = new GraphNode(new THREE.Vector3(2, 0, 0));
   
-  const node1 = new THREE.Mesh(nodeGeometry, nodeMaterial);
-  node1.position.set(-2, 0, 0);
-  scene.add(node1);
+  node1.addToScene(scene);
+  node2.addToScene(scene);
   
-  const node2 = new THREE.Mesh(nodeGeometry, nodeMaterial);
-  node2.position.set(2, 0, 0);
-  scene.add(node2);
+  // Create edge between nodes
+  const edge = new GraphEdge(node1, node2);
+  edge.addToScene(scene);
+
+  // Create triangular prism
+  const prism = new TriangularPrism(new THREE.Vector3(0, 2, 0));
+  prism.addToScene(scene);
+
+  // Create two additional nodes below the prism
+  const node3 = new GraphNode(new THREE.Vector3(-1, -1, 0));
+  const node4 = new GraphNode(new THREE.Vector3(1, -1, 0));
   
-  // Create edge (line) between nodes
-  const edgeGeometry = new THREE.BufferGeometry().setFromPoints([
-    node1.position,
-    node2.position
-  ]);
-  const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
-  const edge = new THREE.Line(edgeGeometry, edgeMaterial);
-  scene.add(edge);
+  node3.addToScene(scene);
+  node4.addToScene(scene);
+
+  // Create edges from prism ports to the nodes below
+  const edge2 = new GraphEdge(prism.port1, node3, 0xffffff, prism.getPort1Direction());
+  const edge3 = new GraphEdge(prism.port2, node4, 0xffffff, prism.getPort2Direction());
+  
+  edge2.addToScene(scene);
+  edge3.addToScene(scene);
 
   // Handle resize
   window.addEventListener('resize', () => {
