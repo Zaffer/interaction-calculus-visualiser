@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GraphNode } from "./objects/GraphNode.js";
 import { GraphEdge } from "./objects/GraphEdge.js";
 import { TriangularPrism } from "./objects/TriangularPrism.js";
+import { PhysicsEngine } from "./physics/PhysicsEngine.js";
 
 // Initialize WebGPU
 async function init() {
@@ -60,6 +61,23 @@ async function init() {
   edge2.addToScene(scene);
   edge3.addToScene(scene);
 
+  // Create physics engine
+  const physics = new PhysicsEngine();
+  
+  // Add all nodes to physics
+  physics.addNode(node1);
+  physics.addNode(node2);
+  physics.addNode(node3);
+  physics.addNode(node4);
+  // Add prism ports as fixed nodes (they participate in forces but don't move)
+  physics.addNode(prism.port1, true);
+  physics.addNode(prism.port2, true);
+  
+  // Add edges to physics
+  physics.addEdge(edge);
+  physics.addEdge(edge2);
+  physics.addEdge(edge3);
+
   // Handle resize
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -71,6 +89,7 @@ async function init() {
   function animate() {
     requestAnimationFrame(animate);
     controls.update();
+    physics.update(); // Update physics simulation
     renderer.renderAsync(scene, camera);
   }
 

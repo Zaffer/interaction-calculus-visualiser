@@ -1,4 +1,10 @@
-### Principles
+# Instructions
+Be concise with your responses.
+Do not elaborate too much after your implementation.
+Keep the summary of what you did extremely short.
+
+
+# Principles
 
 - **Simplicity First**: Keep things simple, always always keep it simple! DO NOT overcomplicate things.
 - **Minimal Code**: Less code is better, least possible code to get it just barely working, be concise.
@@ -6,7 +12,7 @@
 - **Modern Standards**: Assume latest versions of dependencies and language features.
 - **Declarative Approach**: Favor declarative code over imperative when possible
 
-### Guidelines
+# Guidelines
 
 - Use modern TypeScript features (latest syntax, strict typing)
 - Leverage RxJS for reactive, declarative data flow
